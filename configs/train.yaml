@@ -4,14 +4,9 @@
 # order of defaults determines the order in which configs override each other
 defaults:
   - _self_
-  - data: mnist
-  - model: mnist
-  - callbacks: default
-  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
-  - trainer: default
-  - paths: default
-  - extras: default
-  - hydra: default
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
 
   # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
@@ -21,11 +16,12 @@ defaults:
   - hparams_search: null
 
   # optional local config for machine/user specific settings
-  # it's optional since it doesn't need to exist and is excluded from version control
-  - optional local: default
+  # it"s optional since it doesn"t need to exist and is excluded from version control
+  - optional local: default.yaml
 
   # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
+
 
 # task name, determines output directory path
 task_name: "train"
@@ -33,7 +29,7 @@ task_name: "train"
 # tags to help you identify your experiments
 # you can overwrite this in experiment configs
 # overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
-tags: ["dev"]
+tags: ["tags"]
 
 # set False to skip model training
 train: True
@@ -49,4 +45,126 @@ compile: False
 ckpt_path: null
 
 # seed for random number generators in pytorch, numpy and python.random
-seed: null
+seed: 42
+
+
+# Global configuration
+model_name_or_path: "klue/roberta-base"
+max_seq_len: 512
+
+total_steps: 10000
+save_ckpt_every_n_steps: null
+save_ckpt_every_n_epochs: 1
+
+val_check_interval: 0.5
+check_val_every_n_epoch: null
+
+device_ids: "0,1,2,3"
+per_gpu_train_batch_size: 16
+per_gpu_eval_batch_size: 64
+num_workers: 4
+
+train_data_path: "data/train.json"
+dev_data_path: "data/dev.json"
+test_data_path: "data/test.json"
+
+
+# Data configuration
+data:
+  tokenizer:
+    model_name_or_path: ${model_name_or_paths}
+    max_seq_len: ${max_seq_len}
+
+  per_gpu_train_batch_size: ${per_gpu_train_batch_size}
+  per_gpu_eval_batch_size: ${per_gpu_eval_batch_size}
+  num_workers: ${num_workers}
+
+  train_data_path: ${train_data_path}
+  dev_data_path: ${dev_data_path}
+  test_data_path: ${test_data_path}
+
+
+# Model configuration
+model:
+  optimizers:
+    learning_rate: 1e-5
+    betas: [0.9, 0.95]
+    eps: 1e-8
+    weight_decay: 0.01
+    total_steps: ${total_steps}
+    warmup_proportion: 0.05
+
+
+callbacks:
+  model_checkpoint:
+    dirpath: ${paths.output_dir}/checkpoints # directory to save the model file
+    filename: "epoch{epoch:02d}_step{step}" # checkpoint filename
+    monitor: "val/loss" # name of the logged metric which determines when model is improving
+    verbose: True # prints the validation results
+    save_last: True # additionally always save an exact copy of the last checkpoint to a file last.ckpt
+    save_top_k: -1 # save k best models (determined by above metric). if save_top_k == -1, all models are saved.
+    mode: "min" # "max" means higher metric value is better, can be also "min"
+    auto_insert_metric_name: False # when True, the checkpoints filenames will contain the metric name
+    save_weights_only: False # if True, then only the model’s weights will be saved
+    every_n_train_steps: ${save_ckpt_every_n_steps} # number of training steps between checkpoints
+    every_n_epochs: ${save_ckpt_every_n_epochs} # number of epochs between checkpoints
+    train_time_interval: null # checkpoints are monitored at the specified time interval
+    save_on_train_epoch_end: null # whether to run checkpointing at the end of the training epoch / or the end of validation
+
+
+logger:
+  tensorboard:
+    save_dir: "${paths.output_dir}/tensorboard/"
+    name: _${tags}
+    log_graph: False
+    default_hp_metric: True
+    prefix: ""
+    # version: ""
+
+
+trainer:
+  default_root_dir: ${paths.output_dir}
+
+  # min_epochs: 1 # prevents early stopping
+  # max_epochs: 10
+  max_steps: ${total_steps}
+
+  # Accumulates gradients over k batches before stepping the optimizer. Default: 1.
+  accumulate_grad_batches: 1
+
+  # The value at which to clip gradients. 
+  # Passing gradient_clip_val=None disables gradient clipping. 
+  # If using Automatic Mixed Precision (AMP), the gradients will be unscaled before.
+  gradient_clip_val: 1.0
+
+  strategy: ddp_find_unused_parameters_true
+
+  accelerator: gpu
+  num_nodes: 1
+  sync_batchnorm: True
+
+  precision: 16-mixed # mixed precision for extra speed-up
+
+  # perform a validation loop every N training epochs
+  check_val_every_n_epoch: ${check_val_every_n_epoch}
+
+  # How often within one training epoch to check the validation set
+  # pass a float in the range [0.0, 1.0]
+  # or pass an int to check after a fixed number of training batches.
+  val_check_interval: ${val_check_interval}
+
+  # Sanity check runs n batches of val before starting the training routine.
+  num_sanity_val_steps: 10
+  
+  # how much of validation dataset to check  
+  limit_val_batches: 1.0
+
+  # save the state of your last training epoch, checkpoints capture the exact value of all parameters used by a model.
+  enable_checkpointing: True
+
+  # log
+  log_every_n_steps: 10
+
+  # set True to to ensure deterministic results
+  # makes training slower but gives more reproducibility than just setting seeds
+  deterministic: False
