@@ -25,7 +25,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
+conda create -n myenv python=3.10
 conda activate myenv
 
 # install pytorch according to instructions
@@ -33,20 +33,6 @@ conda activate myenv
 
 # install requirements
 pip install -r requirements.txt
-```
-
-#### Conda
-
-```bash
-# clone project
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
-
-# create conda environment and install dependencies
-conda env create -f environment.yaml -n myenv
-
-# activate conda environment
-conda activate myenv
 ```
 
 ## How to run
