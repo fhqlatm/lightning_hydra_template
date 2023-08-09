@@ -17,6 +17,8 @@ from lightning import LightningDataModule
 
 from transformers import AutoTokenizer
 
+from src.dataset.components.LoadDataset import LoadDataset
+
 
 class LihgningDataModule(LightningDataModule):
     """LightningDataModule for dataset.
@@ -68,12 +70,10 @@ class LihgningDataModule(LightningDataModule):
     def setup(self, stage: str = None):        
         if stage == "fit" or stage is None:
             # train dataset
-            with open(self._config["train_data_path"], 'r') as f:
-                self.train_dataset = json.load(f)
-            
+            self.train_dataset = LoadDataset(self._config.train_data_path)
+
             # dev dataset
-            with open(self._config["dev_data_path"], 'r') as f:
-                self.dev_dataset = json.load(f)
+            self.dev_dataset = LoadDataset(self._config.dev_data_path)
 
             # train, dev sampler
             self.train_sampler = DistributedSampler(self.train_dataset, shuffle=True)
@@ -82,8 +82,7 @@ class LihgningDataModule(LightningDataModule):
         
         elif stage == "test" or stage is None:
             # test dataset
-            with open(self._config["test_data_path"], 'r') as f:
-                self.test_dataset = json.load(f)
+            self.test_dataset = LoadDataset(self._config.test_data_path)
             
             # test sampler
             self.test_sampler = SequentialSampler(self.test_dataset)
