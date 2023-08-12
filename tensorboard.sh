@@ -1,1 +1,0 @@
-tensorboard --port=$(($RANDOM% 10+8000)) --logdir=~/research/naver/retro/logs
