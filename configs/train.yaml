@@ -80,7 +80,7 @@ data:
   num_workers: ${num_workers}
 
   train_data_path: ${train_data_path}
-  dev_data_path: ${dev_data_path}
+  val_data_path: ${val_data_path}
   test_data_path: ${test_data_path}
 
 
