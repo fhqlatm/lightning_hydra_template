@@ -72,13 +72,13 @@ class LihgningDataModule(LightningDataModule):
             # train dataset
             self.train_dataset = LoadDataset(self._config.train_data_path)
 
-            # dev dataset
-            self.dev_dataset = LoadDataset(self._config.dev_data_path)
+            # val dataset
+            self.val_dataset = LoadDataset(self._config.val_data_path)
 
-            # train, dev sampler
+            # train, val sampler
             self.train_sampler = DistributedSampler(self.train_dataset, shuffle=True)
-            self.dev_sampler = DistributedSampler(self.dev_dataset, shuffle=False)
-            # self.dev_sampler = SequentialSampler(self.dev_dataset)
+            self.val_sampler = DistributedSampler(self.val_dataset, shuffle=False)
+            # self.val_sampler = SequentialSampler(self.val_dataset)
         
         elif stage == "test" or stage is None:
             # test dataset
