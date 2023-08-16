@@ -11,13 +11,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-from torchmetrics import Metric, Perplexity, Accuracy, MaxMetric, MeanMetric
+from torchmetrics import Metric, Accuracy, MaxMetric, MeanMetric
 
 import lightning
 from lightning import LightningModule
 
 from transformers import get_linear_schedule_with_warmup
-from transformers.modeling_outputs import SequenceClassifierOutput
 
 
 class LightningModule(LightningModule):
@@ -61,21 +60,7 @@ class LightningModule(LightningModule):
         self.val_acc_best = MaxMetric()
 
     def forward(self, x: torch.Tensor):
-        return self.net(x)
-        
-        return SequenceClassifierOutput(
-            loss=loss,
-            # logits=logits,
-            # hidden_states=outputs.hidden_states,
-            # attentions=outputs.attentions,
-        )
-        
-    def on_train_start(self):
-        # by default lightning executes validation step sanity checks before training starts,
-        # so it's worth to make sure validation metrics don't store results from these checks
-        self.val_loss.reset()
-        self.val_acc.reset()
-        self.val_acc_best.reset()
+        return self.model(x)
 
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.model_step(batch)
