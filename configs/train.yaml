@@ -86,6 +86,7 @@ data:
 
 # Model configuration
 model:
+  model_name_or_path: ${model_name_or_paths}
   optimizers:
     learning_rate: 1e-5
     betas: [0.9, 0.95]
@@ -143,7 +144,7 @@ trainer:
   num_nodes: 1
   sync_batchnorm: True
 
-  precision: 16-mixed # mixed precision for extra speed-up
+  precision: bf16-mixed # mixed precision for extra speed-up
 
   # perform a validation loop every N training epochs
   check_val_every_n_epoch: ${check_val_every_n_epoch}

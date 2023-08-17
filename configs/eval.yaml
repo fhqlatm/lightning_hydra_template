@@ -1,0 +1,84 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+
+# task name, determines output directory path
+task_name: "eval"
+
+# tags to help you identify your experiments
+# you can overwrite this in experiment configs
+# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
+tags: ["tags"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: null
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: 42
+
+
+# Global configuration
+model_name_or_path: "klue/roberta-base"
+max_seq_len: 512
+
+device_ids: "0,1,2,3"
+per_gpu_train_batch_size: 16
+per_gpu_eval_batch_size: 64
+num_workers: 4
+
+train_data_path: "data/train.json"
+val_data_path: "data/valid.json"
+test_data_path: "data/test.json"
+
+
+# Data configuration
+data:
+  tokenizer:
+    model_name_or_path: ${model_name_or_paths}
+    max_seq_len: ${max_seq_len}
+
+  per_gpu_train_batch_size: ${per_gpu_train_batch_size}
+  per_gpu_eval_batch_size: ${per_gpu_eval_batch_size}
+  num_workers: ${num_workers}
+
+  train_data_path: ${train_data_path}
+  val_data_path: ${val_data_path}
+  test_data_path: ${test_data_path}
+
+
+# Model configuration
+model:
+  model_name_or_path: ${model_name_or_paths}
+
+
+logger:
+  tensorboard:
+    save_dir: "${paths.output_dir}/tensorboard/"
+    name: _${tags}
+    log_graph: False
+    default_hp_metric: True
+    prefix: ""
+    # version: ""
+
+
+trainer:
+  default_root_dir: ${paths.output_dir}
+
+  strategy: ddp_find_unused_parameters_true
+
+  accelerator: gpu
+  num_nodes: 1
+  sync_batchnorm: True
+
+  precision: bf16-mixed # mixed precision for extra speed-up
+
+  # log
+  log_every_n_steps: 1
+
+  # set True to to ensure deterministic results
+  # makes training slower but gives more reproducibility than just setting seeds
+  deterministic: False
