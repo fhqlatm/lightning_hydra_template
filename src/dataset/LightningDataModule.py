@@ -117,8 +117,14 @@ class LihgningDataModule(LightningDataModule):
         )
         return loader
     
-    # collate function (tokenize batch or etc...)
-    def custom_collate_fn(self, batch: Any):
+    
+class custom_collate_fn():
+    def __init__(self, tokenizer: AutoTokenizer, max_seq_len: int = 512, is_training: bool = True):
+        self.tokenizer = tokenizer
+        self.max_seq_len = max_seq_len
+        self.is_training = is_training
+
+    def __call__(self, batch: Any):    
         batch = list(filter(lambda x: x is not None, batch))
         
         if len(batch) == 0:
