@@ -115,7 +115,7 @@ callbacks:
 
 logger:
   tensorboard:
-    save_dir: "${paths.output_dir}/tensorboard/"
+    save_dir: ${paths.output_dir}/tensorboard/
     name: _${tags}
     log_graph: False
     default_hp_metric: True
