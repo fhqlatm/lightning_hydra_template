@@ -20,7 +20,7 @@ from transformers import AutoTokenizer
 from src.dataset.components.LoadDataset import LoadDataset
 
 
-class LihgningDataModule(LightningDataModule):
+class LightningDataModule(LightningDataModule):
     """LightningDataModule for dataset.
 
     ```A DataModule implements 6 key methods:
