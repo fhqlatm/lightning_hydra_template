@@ -18,7 +18,7 @@ hydra-optuna-sweeper==1.2.0
 tensorboard>=2.4.0
 
 # --------- others --------- #
-rootutils       # standardizing the project root setup
+pyrootutils       # standardizing the project root setup
 pre-commit      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 # sh            # for running bash commands in some tests (linux/macos only)
