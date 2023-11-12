@@ -93,7 +93,7 @@ class LightningDataModule(LightningDataModule):
             batch_size=self._config.per_gpu_train_batch_size,
             sampler=self.train_sampler,
             num_workers=self._config.num_workers,
-            collate_fn=self.custom_collate_fn,
+            collate_fn=custom_collate_fn(tokenizer=self.tokenizer, is_training=True),
         )
         return loader
 
@@ -103,7 +103,7 @@ class LightningDataModule(LightningDataModule):
             batch_size=self._config.per_gpu_eval_batch_size,
             sampler=self.val_sampler,
             num_workers=self._config.num_workers,
-            collate_fn=self.custom_collate_fn,
+            collate_fn=custom_collate_fn(tokenizer=self.tokenizer, is_training=False),
         )
         return loader
 
@@ -113,7 +113,7 @@ class LightningDataModule(LightningDataModule):
             batch_size=self._config.per_gpu_eval_batch_size,
             sampler=self.test_sampler,
             num_workers=self._config.num_workers,
-            collate_fn=self.custom_collate_fn,
+            collate_fn=custom_collate_fn(tokenizer=self.tokenizer, is_training=False),
         )
         return loader
     

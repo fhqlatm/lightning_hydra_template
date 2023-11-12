@@ -2,7 +2,6 @@ import json
 import math
 import numpy as np
 from pathlib import Path
-from einops import rearrange
 from functools import partial
 from omegaconf import DictConfig
 from typing import Any, Dict, Optional, Tuple
