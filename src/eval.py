@@ -57,7 +57,7 @@ def evaluate(_config: DictConfig) -> Tuple[dict, dict]:
     log.info(f"Instantiating datamodule...")
 
     log.info(f"Instantiating datamodule...")
-    datamodule: LightningDataModule = LihgningDataModule(_config=_config.data)
+    datamodule: LightningDataModule = LightningDataModule(_config=_config.data)
 
     log.info(f"Instantiating model...")
     model: LightningModule = LightningModule(_config=_config.model)
