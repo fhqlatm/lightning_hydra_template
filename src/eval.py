@@ -33,7 +33,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from src import utils
 from src.models.LightningModule import LightningModule
-from src.dataset.LightningDataModule import LihgningDataModule
+from src.dataset.LightningDataModule import LightningDataModule
 
 log = utils.get_pylogger(__name__)
 
