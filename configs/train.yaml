@@ -52,7 +52,10 @@ seed: 42
 model_name_or_path: "klue/roberta-base"
 max_seq_len: 512
 
-total_steps: 10000
+# set toal_steps to -1 to train for a fixed number of epochs
+total_steps: -1
+num_epochs: 3
+
 save_ckpt_every_n_steps: null
 save_ckpt_every_n_epochs: 1
 
@@ -92,7 +95,6 @@ model:
     betas: [0.9, 0.95]
     eps: 1e-8
     weight_decay: 0.01
-    total_steps: ${total_steps}
     warmup_proportion: 0.05
 
 

@@ -133,11 +133,13 @@ class LightningModule(LightningModule):
         
         # warmup proportion assertion
         assert self._config.optimizers.warmup_proportion <= 1.0, "warmup_proportion cannot be greater than 1"
+        self.total_stpes = self.trainer.estimated_stepping_batches
+        self.num_warmup_steps = int(self.total_stpes * self._config.optimizers.warmup_proportion)
         
-        lr_scheduler = get_linear_schedule_with_warmup(
+        lr_scheduler = get_cosine_schedule_with_warmup(
             optimizer=optimizer, 
-            num_training_steps=self._config.optimizers.total_steps, 
-            num_warmup_steps=math.ceil(self._config.optimizers.total_steps * self._config.optimizers.warmup_proportion)
+            num_training_steps=self.total_stpes, 
+            num_warmup_steps=self.num_warmup_steps
         )
 
         scheduler = {
