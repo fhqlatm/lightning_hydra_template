@@ -55,8 +55,6 @@ def evaluate(_config: DictConfig) -> Tuple[dict, dict]:
     assert _config.ckpt_path
 
     log.info(f"Instantiating datamodule...")
-
-    log.info(f"Instantiating datamodule...")
     datamodule: LightningDataModule = LightningDataModule(_config=_config.data)
 
     log.info(f"Instantiating model...")
